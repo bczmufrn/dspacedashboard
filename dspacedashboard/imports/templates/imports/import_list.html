@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Código da operação</th>
+                    <th>Data</th>
+                    <th>Handle</th>
+                    <th>Usuário</th>               
+                </tr>
+            </thead>
+            <tbody>
+                {% for import in object_list %}
+                <tr>
+                    <td>{{import.id}}</td>
+                    <td>{{import.created_at}}</td>
+                    <td>{{import.collection}}</td>
+                    <td>{{import.user}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

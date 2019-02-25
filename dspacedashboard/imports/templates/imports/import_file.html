@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Importar <small class="text-muted">DSpace Simple Archive Format</small></h2>        
+    </div>
+    <div class="col-md-12">
+        <form method="POST" enctype='multipart/form-data'>
+            {% csrf_token %}
+            {{form.non_field_errors}}
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">     
+                        <label for="exampleInputEmail1">{{form.collection.label}}</label>           
+                        {% render_field form.collection class="form-control" %}
+                        {% for error in form.collection.errors %}
+                            <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">     
+                        <label for="exampleInputEmail1">{{form.dspace_simple_archive.label}}</label>           
+                        {% render_field form.dspace_simple_archive class="form-control-file" %}
+                        {% for error in form.dspace_simple_archive.errors %}
+                            <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Importar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'vendor/select2/js/select2.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#id_collection').select2();
+        });
+    </script>
+{% endblock %}
