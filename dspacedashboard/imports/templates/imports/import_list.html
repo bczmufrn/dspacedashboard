@@ -9,6 +9,7 @@
                 <tr>
                     <th>Código da operação</th>
                     <th>Data</th>
+                    <th>Coleção</th>
                     <th>Handle</th>
                     <th>Usuário</th>               
                 </tr>
@@ -18,7 +19,8 @@
                 <tr>
                     <td>{{import.id}}</td>
                     <td>{{import.created_at}}</td>
-                    <td>{{import.collection}}</td>
+                    <td>{{import.collection.name}}</td>
+                    <td>{{import.collection.handle}}</td>
                     <td>{{import.user}}</td>
                 </tr>
                 {% endfor %}
