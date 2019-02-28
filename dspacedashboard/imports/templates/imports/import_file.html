@@ -2,13 +2,12 @@
 {% load static %}
 {% load widget_tweaks %}
 
+{% block page_title %} Importar <small class="text-muted">DSpace Simple Archive Format</small> {% endblock %}
+
 {% block content %}
-<div class="row">
+<div class="row">    
     <div class="col-md-12">
-        <h2>Importar <small class="text-muted">DSpace Simple Archive Format</small></h2>        
-    </div>
-    <div class="col-md-12">
-        <form method="POST" enctype='multipart/form-data'>
+        <form method="POST" enctype='multipart/form-data' id="import_form">
             {% csrf_token %}
             {{form.non_field_errors}}
             <div class="card">
@@ -30,13 +29,30 @@
                     </div>
                     
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Importar</button>
+                        <button type="submit" class="btn btn-primary" id="submit_import">Importar</button>
+                        <button type="submit" class="btn btn-primary" id="wait_import" disabled style="display: none;"><i class="fas fa-spinner fa-spin"></i> Por favor aguarde</button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
+{% if import_output %}
+<div class="row mt-3">
+    <div class="col-md-12">        
+        <div class="card">
+            <div class="card-header">
+                <b>Resultado da importação</b>
+            </div>
+            <div class="card-body">
+                {% for line in import_output %}
+                    {{ line }}<br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block extra_scripts %}
@@ -44,6 +60,11 @@
     <script>
         $(document).ready(function() {
             $('#id_collection').select2();
+
+            $('#import_form').submit(function(){
+                $('#submit_import').hide();
+                $('#wait_import').show();
+            });
         });
     </script>
 {% endblock %}

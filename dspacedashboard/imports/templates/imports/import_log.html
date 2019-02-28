@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %} Destalhamento de operação {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <b>Operação:</b> {{object.pk}} <br>
+                <b>Coleção:</b> {{object.collection}} <br>
+                <b>Usuário:</b> {{object.user}}  em {{object.created_at}}<br>
+            </div>
+            <div class="card-body">
+                {% for line in log_content %}
+                    {{line}}<br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

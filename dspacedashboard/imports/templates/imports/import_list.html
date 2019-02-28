@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block page_title %} Histórico de importações {% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-md-12">
@@ -17,11 +19,15 @@
             <tbody>
                 {% for import in object_list %}
                 <tr>
-                    <td>{{import.id}}</td>
+                    <td><a href="{% url 'import:log' import.id %}">{{import.id}}</a></td>
                     <td>{{import.created_at}}</td>
                     <td>{{import.collection.name}}</td>
                     <td>{{import.collection.handle}}</td>
                     <td>{{import.user}}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">Nenhuma importação encontrada</td>
                 </tr>
                 {% endfor %}
             </tbody>
