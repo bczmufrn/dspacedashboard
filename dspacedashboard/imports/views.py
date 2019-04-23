@@ -54,7 +54,7 @@ def import_file(request):
         output += subprocess.check_output(['ping', '-c', '10', '127.0.0.1'])
 
         fs.delete(filename)
-        shutil.rmtree(unziped_dir)     
+        shutil.rmtree(unziped_dir)
         
         logger = open(f'log/{str(file_import.id)}.log', 'w+')
         for line in output.splitlines():            
@@ -73,6 +73,7 @@ def import_file(request):
 class ImportFileListView(ListView):
     template_name = 'imports/import_list.html'
     model = FileImport
+    paginate_by = 20
 
 
 class ImportLogDetailView(DetailView):
