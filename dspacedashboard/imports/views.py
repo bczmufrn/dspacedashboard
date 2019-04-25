@@ -18,6 +18,9 @@ from dspacedashboard.imports.forms import ImportFileForm
 from dspacedashboard.imports.models import FileImport, Collection
 from dspacedashboard.core.dspace_utils import get_collections
 
+def _format_output(output):
+    pass
+
 
 def import_file(request):
     template_name = 'imports/import_file.html'
@@ -36,7 +39,8 @@ def import_file(request):
         #Getting/save target collection and file data
         handle = form.cleaned_data.get('collection')        
         collection_name = next(item for item in collections if item["handle"] == handle)
-        collection, created = Collection.objects.get_or_create(handle=handle, name=collection_name.get('dc.title', [['']])[0])
+        collection, created = Collection.objects.get_or_create(handle=handle, 
+            name=collection_name.get('dc.title', [['']])[0])
         file_import = FileImport.objects.create(user=request.user, collection=collection)
         
         #Saving temporary file
@@ -50,8 +54,17 @@ def import_file(request):
         import_dir = os.path.join(settings.MEDIA_ROOT, unziped_dir, os.listdir(unziped_dir)[0])
         import_dir = os.path.join(import_dir, os.listdir(import_dir)[0])
 
-        #COMANDO DE IMPORTAÇÃO AQUI   
-        output += subprocess.check_output(['ping', '-c', '10', '127.0.0.1'])
+        dspace_binary_dir = os.path.join(settings.DSPACE_PATH, 'bin', 'dspace')
+        mapfiles_dir = os.path.join(settings.MEDIA_ROOT, 'mapfiles', f'import_id_{file_import.pk}.mapfile')
+
+        try:
+            output += subprocess.check_output([
+                dspace_binary_dir, 'import', '-t', '-a', '-w', '-c', handle, '-m', mapfiles_dir, 
+                '-e', 'sst@bczm.ufrn.br', '-s', import_dir
+            ])
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError("command '{}' return with error (code {}): {}".format(
+                e.cmd, e.returncode, e.output))
 
         fs.delete(filename)
         shutil.rmtree(unziped_dir)
