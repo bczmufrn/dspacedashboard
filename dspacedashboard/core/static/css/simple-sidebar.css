@@ -33,6 +33,10 @@ body {
   margin-left: 0;
 }
 
+.text-bigger { 
+  font-size: 17pt;
+}
+
 @media (min-width: 768px) {
   #sidebar-wrapper {
     margin-left: 0;

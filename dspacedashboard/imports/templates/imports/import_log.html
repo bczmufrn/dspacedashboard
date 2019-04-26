@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% load static %}
+{% load filters %}
 
 {% block page_title %} Destalhamento de operação {% endblock %}
 
@@ -10,12 +12,14 @@
             <div class="card-header">
                 <b>Operação:</b> {{object.pk}} <br>
                 <b>Coleção:</b> {{object.collection}} <br>
-                <b>Usuário:</b> {{object.user}}  em {{object.created_at}}<br>
+                <b>Por:</b> {{object.user}}  em {{object.created_at}}<br>
             </div>
             <div class="card-body">
+                <h4 class="text-primary"><i class="far fa-play-circle"></i> Início da operação</h4>
                 {% for line in log_content %}
-                    {{line}}<br>
+                    {{ line|format_output|safe }}<br>
                 {% endfor %}
+                <h4 class="text-primary"><i class="far fa-check-circle"></i> Fim da operação</h4>
             </div>
         </div>
     </div>

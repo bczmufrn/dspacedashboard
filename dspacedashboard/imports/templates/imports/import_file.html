@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+
 {% load static %}
+{% load filters %}
 {% load widget_tweaks %}
 
 {% block page_title %} Importar <small class="text-muted">DSpace Simple Archive Format</small> {% endblock %}
@@ -38,16 +40,18 @@
     </div>
 </div>
 {% if import_output %}
-<div class="row mt-3">
+<div class="row mt-3 mb-3">
     <div class="col-md-12">        
         <div class="card">
             <div class="card-header">
                 <b>Resultado da importação</b>
             </div>
             <div class="card-body">
+                <h4 class="text-primary"><i class="far fa-play-circle"></i> Início da operação</h4>
                 {% for line in import_output %}
-                    {{ line }}<br>
+                    {{ line|format_output|safe }}<br>
                 {% endfor %}
+                <h4 class="text-primary"><i class="far fa-check-circle"></i> Fim da operação</h4>
             </div>
         </div>
     </div>

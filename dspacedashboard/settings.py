@@ -137,4 +137,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 #DSpace
+SOLR_URL = config('SOLR_URL')
 DSPACE_PATH = config('DSPACE_PATH')
+MAPFILES_ROOT = os.path.join(BASE_DIR, 'mapfiles')
+DSPACE_IMPORT_USER_MAIL = config('DSPACE_IMPORT_USER_MAIL')

@@ -1,5 +1,6 @@
+import re
 import requests, json, subprocess, logging, os
-import shutil 
+import shutil
 
 
 from django.urls import reverse
@@ -18,13 +19,9 @@ from dspacedashboard.imports.forms import ImportFileForm
 from dspacedashboard.imports.models import FileImport, Collection
 from dspacedashboard.core.dspace_utils import get_collections
 
-def _format_output(output):
-    pass
-
-
 def import_file(request):
     template_name = 'imports/import_file.html'
-    success_message = 'Importação realizada com sucesso'
+    success_message = 'Importação realizada com sucesso!'
 
     collections = get_collections()
     collections_form = ()
@@ -49,32 +46,33 @@ def import_file(request):
         filename = fs.save(upload_file.name, upload_file)
 
         unziped_dir = os.path.join(settings.MEDIA_ROOT, str(file_import.id))
-        output = subprocess.check_output(['unzip', fs.path(filename), '-d', unziped_dir])         
+        output = subprocess.check_output(['unzip', fs.path(filename), '-d', unziped_dir])
         
         import_dir = os.path.join(settings.MEDIA_ROOT, unziped_dir, os.listdir(unziped_dir)[0])
         import_dir = os.path.join(import_dir, os.listdir(import_dir)[0])
 
         dspace_binary_dir = os.path.join(settings.DSPACE_PATH, 'bin', 'dspace')
-        mapfiles_dir = os.path.join(settings.MEDIA_ROOT, 'mapfiles', f'import_id_{file_import.pk}.mapfile')
+        mapfile = os.path.join(settings.MAPFILES_ROOT, f'{file_import.pk}.mapfile')
 
         try:
             output += subprocess.check_output([
-                dspace_binary_dir, 'import', '-t', '-a', '-w', '-c', handle, '-m', mapfiles_dir, 
-                '-e', 'sst@bczm.ufrn.br', '-s', import_dir
+                dspace_binary_dir, 'import', '-a', '-w', '-c', handle, '-m', mapfile,
+                '-e', settings.DSPACE_IMPORT_USER_MAIL, '-s', import_dir
             ])
         except subprocess.CalledProcessError as e:
-            raise RuntimeError("command '{}' return with error (code {}): {}".format(
-                e.cmd, e.returncode, e.output))
+            output += e.output
 
+        #Removing uploaded files
         fs.delete(filename)
         shutil.rmtree(unziped_dir)
         
+        output = output.decode('utf-8').splitlines()
+        context['import_output'] = output
+
         logger = open(f'log/{str(file_import.id)}.log', 'w+')
-        for line in output.splitlines():            
-            logger.write(line.decode('utf-8'))
+        for line in output:
+            logger.write(line)
             logger.write('\n')
-                    
-        context['import_output'] = output.decode('utf-8').splitlines()
 
         messages.info(request, success_message)
         logger.close()
@@ -86,7 +84,7 @@ def import_file(request):
 class ImportFileListView(ListView):
     template_name = 'imports/import_list.html'
     model = FileImport
-    paginate_by = 20
+    paginate_by = 50
 
 
 class ImportLogDetailView(DetailView):
