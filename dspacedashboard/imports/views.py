@@ -86,6 +86,9 @@ class ImportFileListView(ListView):
     model = FileImport
     paginate_by = 50
 
+    def get_queryset(self):
+        return FileImport.objects.all().order_by('-created_at')
+
 
 class ImportLogDetailView(DetailView):
     template_name = 'imports/import_log.html'

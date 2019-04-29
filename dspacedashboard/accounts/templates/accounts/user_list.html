@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %} Gerenciamento de usuários {% endblock %}
+
+{% block content %}
+<div class="row">    
+    <div class="col-md-12">
+        <table class="table">
+            <thead class="thead">
+                <tr>
+                    <th>Usuário</th>
+                    <th>Login</th>
+                    <th>Administrador</th>
+                    <th>Criado em</th>
+                    <th>Editar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in object_list %}
+                <tr>
+                    <td>{{user}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.is_staff|yesno:"Sim,Não"}}</td>
+                    <td>{{user.created_at}}</td>
+                    <td><a href="{% url 'accounts:user_update' user.pk %}"><i class="fas fa-pen"></i></a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Sem usuários cadastrados</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>        
+    </div>    
+</div>
+{% endblock %}

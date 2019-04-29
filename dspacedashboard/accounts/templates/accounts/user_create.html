@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load widget_tweaks %}
+
+{% block page_title %} Gerenciamento de usuários {% endblock %}
+
+{% block content %}
+<div class="row">    
+    <div class="col-md-12">
+        <form action="#" method="POST">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>{{ form.name.label }}</label>
+                    {% render_field form.name class="form-control" %}
+                    {% if form.name.errors %}
+                        <label class="text-danger">{{ form.name.errors.0 }}</label>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ form.username.label }}</label>
+                    {% render_field form.username class="form-control" %}
+                    {% if form.username.errors %}
+                        <label class="text-danger">{{ form.username.errors.0 }}</label>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-12">
+                    <label>{{ form.email.label }}</label>
+                    {% render_field form.email class="form-control" %}
+                    {% if form.email.errors %}
+                        <label class="text-danger">{{ form.email.errors.0 }}</label>
+                    {% endif %}
+                </div>                
+                <div class="form-group col-md-6">
+                    <label>{{ form.password1.label }}</label>
+                    {% render_field form.password1 class="form-control" %}
+                    {% if form.password1.errors %}
+                        <label class="text-danger">{{ form.password1.errors.0 }}</label>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    <label>{{ form.password2.label }}</label>
+                    {% render_field form.password2 class="form-control" %}
+                    {% if form.password2.errors %}
+                        <label class="text-danger">{{ form.password2.errors.0 }}</label>
+                    {% endif %}
+                </div>
+                <div class="form-group col-md-6">
+                    {% render_field form.is_staff %}
+                    <label for="{{ form.is_staff.id_for_label }}">{{ form.is_staff.label }}</label>
+                </div>
+            </div>
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary" value="Salvar">
+            </div>
+        </form>
+    </div>    
+</div>
+{% endblock %}

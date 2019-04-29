@@ -20,5 +20,6 @@ from django.conf.urls import include
 urlpatterns = [
     path('', include('dspacedashboard.core.urls', namespace='core')),
     path('import/', include('dspacedashboard.imports.urls', namespace='import')),
+    path('conta/', include('dspacedashboard.accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
 ]

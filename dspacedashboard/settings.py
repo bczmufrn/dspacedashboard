@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'dspacedashboard.core',
     'dspacedashboard.imports',
+    'dspacedashboard.accounts',
 
     'widget_tweaks',
 ]
@@ -124,6 +125,12 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+#Auth
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'core:home'
+LOGOUT_URL = 'accounts:login'
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Static files (CSS, JavaScript, Images)
