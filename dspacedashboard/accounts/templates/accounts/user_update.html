@@ -42,6 +42,7 @@
                 </div>
             </div>
             <div class="text-center">
+                <a href="{% url 'accounts:user_list' %}" class="btn btn-secondary">Voltar</a>
                 <a class="btn btn-danger btn-fill" href="{% url 'accounts:reset_password' object.pk %}">Redefinir senha</a>
                 <input type="submit" class="btn btn-primary" value="Salvar">
             </div>

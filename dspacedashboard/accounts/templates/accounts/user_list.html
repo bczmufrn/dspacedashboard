@@ -3,6 +3,10 @@
 
 {% block page_title %} Gerenciamento de usuários {% endblock %}
 
+{% block actions %}
+    <a href="{% url 'accounts:user_create' %}" class="btn btn-sm btn-outline-primary">Adicionar</a href="#">
+{% endblock %}
+
 {% block content %}
 <div class="row">    
     <div class="col-md-12">

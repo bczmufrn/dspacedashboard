@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %} Início {% endblock %}
+
+{% block content %}
+<div class="row">    
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          Últimas importações
+        </div>
+        <div class="card-body">
+          <table class="table">
+            <thead class="thead">
+              <tr>
+                <th>Usuário</th>
+                <th>Data</th>
+                <th>Coleção</th>
+                <th class="text-right">Detalhes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for import in imports %}
+                <tr>
+                    <td>{{import.user}}</td>
+                    <td>{{import.created_at.date}}</td>
+                    <td>{{import.collection}}</td>
+                    <td class="text-right"><a href="{% url 'imports:log' import.pk %}"><i class="fas fa-search"></i></a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4">Sem importações recentes</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

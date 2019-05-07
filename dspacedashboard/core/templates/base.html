@@ -23,17 +23,22 @@
 
 <body>
   <nav class="navbar navbar-dark fixed-top bg-dark navbar-expand-lg p-0 shadow">
-    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Importador DSpace</a>    
-    <input class="form-control mr-sm-2 ml-1 w-25" type="search" placeholder="Buscar" aria-label="Buscar">
-    <div class="collapse navbar-collapse" id="navbarNavDropdown">      
+    <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Importador DSpace</a>
+    {% if enable_search %}
+      <form url="#" method="GET" class="input-group mr-sm-2 ml-1 w-25">
+        <input type="text" class="form-control" name="query" placeholder="Buscar">
+      </form>
+    {% endif %}
+
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav ml-auto">          
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{user}}
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="#">Alterar senha</a>
-            <a class="dropdown-item" href="#">Sair</a>
+            <a class="dropdown-item" href="{% url 'accounts:update_password' %}">Alterar senha</a>
+            <a class="dropdown-item" href="{% url 'accounts:logout' %}">Sair</a>
           </div>
         </li>
       </ul>      
@@ -63,12 +68,14 @@
               Histórico
             </a>
           </li>
+          {% if user.is_staff %}
           <li class="nav-item">
             <a class="nav-link {% if url_name == 'user_list'%}active{% endif %}" href="{% url 'accounts:user_list' %}">
               <i class="fas fa-users"></i>
               Usuários
             </a>
           </li>          
+          {% endif %}
         </ul>
       </div>
     </nav>
@@ -78,13 +85,9 @@
         <h1 class="h2">{% block page_title %} {% endblock %}</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
+            {% block actions %}
+            {% endblock %}
+          </div>          
         </div>
       </div>
       

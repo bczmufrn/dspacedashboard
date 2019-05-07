@@ -8,6 +8,10 @@ from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import DetailView
@@ -19,6 +23,7 @@ from dspacedashboard.imports.forms import ImportFileForm
 from dspacedashboard.imports.models import FileImport, Collection
 from dspacedashboard.core.dspace_utils import get_collections
 
+@login_required
 def import_file(request):
     template_name = 'imports/import_file.html'
     success_message = 'Importação realizada com sucesso!'
@@ -81,18 +86,32 @@ def import_file(request):
     return render(request, template_name, context)
 
 
-class ImportFileListView(ListView):
+class ImportFileListView(LoginRequiredMixin, ListView):
     template_name = 'imports/import_list.html'
     model = FileImport
-    paginate_by = 50
+    paginate_by = 100
 
     def get_queryset(self):
-        return FileImport.objects.all().order_by('-created_at')
+        query = self.request.GET.get('query', '')
+        file_imports = FileImport.objects
+        file_imports = file_imports.search(query) if query else file_imports.all()
+        if not self.request.user.is_staff:
+            file_imports = file_imports.filter(user=self.request.user)
+
+        return file_imports.order_by('-created_at')
+
+    def get_context_data(self, **kwargs):
+        context = super(ImportFileListView, self).get_context_data(**kwargs)
+        context['enable_search'] = True
+        return context
 
 
-class ImportLogDetailView(DetailView):
+class ImportLogDetailView(UserPassesTestMixin, DetailView):
     template_name = 'imports/import_log.html'
     model = FileImport
+
+    def test_func(self):
+        return self.get_object().user == self.request.user
 
     def get_context_data(self, **kwargs):
         context = super(ImportLogDetailView, self).get_context_data(**kwargs)

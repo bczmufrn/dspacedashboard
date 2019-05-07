@@ -27,30 +27,44 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="5">Nenhuma importação encontrada</td>
+                    <td colspan="5">Nenhuma importação encontrada. 
+                        <a href="{% url 'imports:history' %}">Voltar para listagem</a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
         {% if is_paginated %}
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a></li>
-            {% endif %}
-            {% for i in paginator.page_range %}
-                {% if page_obj.number == i %}
-                    <li class="page-item active">
-                        <a class="page-link" href="#">{{ i }}<span class="sr-only">(current)</span></a>
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            Anterior
+                        </a>
                     </li>
-                {% else %}
-                    <li><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
                 {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Próxima</a></li>
-            {% endif %}
-        </ul>
+                {% for i in paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active">
+                            <a class="page-link" href="#">{{ i }}<span class="sr-only">(current)</span></a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="page-link" href="?page={{ i }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                                {{ i }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                            Próxima
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
         {% endif %}
     </div>    
 </div>

@@ -9,7 +9,7 @@ from django.conf import settings
 from dspacedashboard.core.models import BaseModel
 
 class CustomUserManager(UserManager):
-	def buscar(self, query):
+	def search(self, query):
 		return self.filter(Q(name__icontains=query) | Q(username__icontains=query) | Q(email__icontains=query))
 
 class User(BaseModel, AbstractBaseUser, PermissionsMixin):
@@ -21,7 +21,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 	email = models.EmailField('E-mail', blank=True)
 	name = models.CharField('Nome', max_length=100, blank=True)	
 	is_active = models.BooleanField('Está ativo', blank=True, default=True)
-	is_staff = models.BooleanField('Administrador?', blank=True, default=False)
+	is_staff = models.BooleanField('Administrador', blank=True, default=False)
 
 	objects = CustomUserManager()
 
