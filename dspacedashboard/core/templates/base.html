@@ -51,26 +51,27 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link {% if request.get_full_path == 'home'%}active{% endif %}" href="{% url 'core:home' %}">
+            {{request.url}}
+            <a class="nav-link {% if request.resolver_match.url_name == 'home'%}active{% endif %}" href="{% url 'core:home' %}">
               <i class="fas fa-home"></i>
               Home
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if url_name == 'file'%}active{% endif %}" href="{% url 'import:file' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'file'%}active{% endif %}" href="{% url 'import:file' %}">
               <i class="fas fa-upload"></i>
               Importar
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if url_name == 'history'%}active{% endif %}" href="{% url 'import:history' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'history'%}active{% endif %}" href="{% url 'import:history' %}">
               <i class="fas fa-list-ul"></i>
               Histórico
             </a>
           </li>
           {% if user.is_staff %}
           <li class="nav-item">
-            <a class="nav-link {% if url_name == 'user_list'%}active{% endif %}" href="{% url 'accounts:user_list' %}">
+            <a class="nav-link {% if request.resolver_match.url_name == 'user_list'%}active{% endif %}" href="{% url 'accounts:user_list' %}">
               <i class="fas fa-users"></i>
               Usuários
             </a>
@@ -114,14 +115,6 @@
   <!-- Bootstrap core JavaScript -->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-  <!-- Menu Toggle Script -->
-  <script>
-    $("#menu-toggle").click(function(e) {
-      e.preventDefault();
-      $("#wrapper").toggleClass("toggled");
-    });
-  </script>
 
   {% block extra_scripts %}
   {% endblock %}

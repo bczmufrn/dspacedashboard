@@ -38,7 +38,7 @@ def import_file(request):
     context = {}
 
     if form.is_valid():
-        #Getting/save target collection and file data
+        #Getting/saving target collection and file data
         handle = form.cleaned_data.get('collection')        
         collection_name = next(item for item in collections if item["handle"] == handle)
         collection, created = Collection.objects.get_or_create(handle=handle, 
@@ -111,7 +111,8 @@ class ImportLogDetailView(UserPassesTestMixin, DetailView):
     model = FileImport
 
     def test_func(self):
-        return self.get_object().user == self.request.user
+        user = self.request.user
+        return user.is_staff or self.get_object().user == user
 
     def get_context_data(self, **kwargs):
         context = super(ImportLogDetailView, self).get_context_data(**kwargs)
