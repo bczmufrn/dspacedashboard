@@ -14,6 +14,9 @@ import os
 from decouple import config, Csv
 from dj_database_url import parse as dburl
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -111,6 +114,17 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+#Sentry
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://031512d80a6c4b9a8ca8b1d399e74ba4@o277409.ingest.sentry.io/5223310",
+        integrations=[DjangoIntegration()],
+
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True
+    )
 
 
 # Internationalization
