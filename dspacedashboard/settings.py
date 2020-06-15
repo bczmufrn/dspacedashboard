@@ -116,13 +116,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 #Sentry
-if not DEBUG:
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if not DEBUG and SENTRY_DSN:
     sentry_sdk.init(
-        dsn="https://031512d80a6c4b9a8ca8b1d399e74ba4@o277409.ingest.sentry.io/5223310",
+        dsn=SENTRY_DSN,
         integrations=[DjangoIntegration()],
-
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True
     )
 
