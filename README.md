@@ -40,7 +40,7 @@ E por fim, deve-se criar o usuário administrador:
 
 ## Execução
 
-Recomenda-se a utilização de um daemon para execução do Gunicorn, exposto via socker unix ou porta TCP. Feito isso, deve ser realizada a exposição do serviço via servidor web por proxy reverso para o importador.
+Recomenda-se a utilização de um daemon para execução do Gunicorn, exposto via socket unix ou porta TCP. Feito isso, deve ser realizada a exposição do serviço via servidor web por proxy reverso para o importador.
 
 ## Links de referência
 
