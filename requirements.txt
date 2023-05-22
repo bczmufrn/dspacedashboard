@@ -1,5 +1,5 @@
 django==2.2.13
-requests==2.21.0
+requests==2.31.0
 python-decouple==3.1
 django-widget-tweaks==1.4.3
 dj_database_url==0.5.0
