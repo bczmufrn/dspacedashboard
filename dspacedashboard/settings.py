@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'dspacedashboard.core',
     'dspacedashboard.imports',
     'dspacedashboard.accounts',
+    'dspacedashboard.scylax',
 
     'widget_tweaks',
 ]

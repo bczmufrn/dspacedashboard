@@ -4,3 +4,4 @@ python-decouple==3.1
 django-widget-tweaks==1.4.3
 dj_database_url==0.5.0
 sentry-sdk==0.14.3
+pandas==2.0.2
