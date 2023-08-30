@@ -1,3 +1,5 @@
+from lxml import etree
+
 from django.db import models
 
 from dspacedashboard.core.models import BaseModel
@@ -64,3 +66,34 @@ class Article(BaseModel):
     class Meta:
         verbose_name = 'Artigo'
         verbose_name_plural = 'Artigos'
+
+    def to_xml(self):
+        root = etree.Element('dublin_core', schema='dc')
+
+        dc_type = etree.Element('dcvalue', element="type", qualifier="none")
+        dc_type.text = 'article'
+        root.append(dc_type)
+
+        date = etree.Element('dcvalue', element="date", qualifier="issued")
+        date.text = str(self.year.year)
+        root.append(date)
+
+        title = etree.Element('dcvalue', element="title", qualifier="none", language="pt_BR")
+        title.text = self.title
+        root.append(title)
+
+        dc_issn = etree.Element('dcvalue', element="identifier", qualifier="issn")
+        dc_issn.text = self.issn
+        root.append(dc_issn)
+
+        for author in self.authors.all():
+            dc_author = etree.Element('dcvalue', element="contributor", qualifier="author", language="pt_BR")
+            dc_author_lattes = etree.Element('dcvalue', element="contributor", qualifier="authorLattes", language="pt_BR")
+            
+            dc_author.text = author.name
+            dc_author_lattes.text = f'http://lattes.cnpq.br/{author.id_lattes}'
+            
+            root.append(dc_author)
+            root.append(dc_author_lattes)
+
+        return etree.tostring(root, pretty_print=True)
