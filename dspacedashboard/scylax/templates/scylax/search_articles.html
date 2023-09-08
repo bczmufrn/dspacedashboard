@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block page_title %} Busca por artigos Scylax {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form action="{% url 'scylax:search' %}" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="form-group col-10">
+                    <label>{{form.department.label}}</label>
+                    {% render_field form.department class="form-control" %}
+                    {% for error in form.department.errors %}
+                        <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-2">
+                    <label>{{form.year.label}}</label>
+                    {% render_field form.year class="form-control" %}
+                    {% for error in form.year.errors %}
+                        <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-6">
+                    <label for="exampleInputEmail1">{{form.title.label}}</label>
+                    {% render_field form.title class="form-control" %}
+                    {% for error in form.title.errors %}
+                        <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-6">
+                    <label for="exampleInputEmail1">{{form.author.label}}</label>
+                    {% render_field form.author class="form-control" %}
+                    {% for error in form.author.errors %}
+                        <small id="emailHelp" class="form-text text-danger">{{error}}</small>
+                    {% endfor %}
+                </div>
+                <div class="form-group col-12 pl-0">
+                    <div class="form-check">
+                        {{ form.include_exported }}
+                        <label class="form-check-label" for="{{form.include_exported.auto_id}}">
+                          {{form.include_exported.label}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-block btn-outline-primary">Buscar</button>
+        </form>
+
+        {% if show_results %}
+        <h3 class="mt-4">Resultado da busca</h3>
+        <span class="text-muted">{{articles.count}} artigos encontrados</span>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th scope="col">Título</th>
+                    <th scope="col">Ano</th>
+                    <th scope="col">Autores</th>
+                    <th scope="col">Exportado</th>
+                    <th>
+                        <input type="checkbox" id="select-all">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{article.title}}</td>
+                    <td>{{article.year.year}}</td>
+                    <td>{{article.authors.count}}</td>
+                    <td>{{article.exported|yesno:"Sim,Não"}}</td>
+                    <td>
+                        <input type="checkbox" class="export-article" value="{{article.id}}">
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4">Nenhum resultado encontrado</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="row">
+            <div class="col-6 mb-5">
+                <button type="button" class="btn btn-block btn-primary" onclick="exportArticles(false)">Apenas exportar artigos</button>
+            </div>
+            <div class="col-6 mb-5">
+                <button type="button" class="btn btn-block btn-primary" onclick="exportArticles(true)">Exportar artigos e marcar como exportados</button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    let selectedArtciles = []
+    let fileName = 'ScylaxExport.zip'
+
+    const exportCheckboxes = document.querySelectorAll(".export-article")
+
+    exportCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener("change", function(e) {
+            if (e.target.checked){
+                selectedArtciles.push(e.target.value)
+            } else {
+                selectedArtciles = selectedArtciles.filter(i => i !== e.target.value)
+            }
+        });
+    })
+
+    document.getElementById("select-all").addEventListener("change", function(e) {
+        const exportCheckboxes = document.querySelectorAll(".export-article")
+
+        exportCheckboxes.forEach(function (checkbox) {
+            checkbox.checked = e.target.checked
+            const changeEvent = new Event('change', {
+                bubbles: true,
+                cancelable: true
+            });
+
+            checkbox.dispatchEvent(changeEvent);
+        })
+    })
+
+
+    const exportArticles = markExported => {
+        if (selectedArtciles.length == 0){
+            alert('Selecione pelo menos um artigo para exportação')
+            return
+        }
+
+        postData(markExported)
+    }
+
+    async function postData(markExported = false) {
+        data = {
+            article_pks: selectedArtciles,
+            mark_exported: markExported,
+        }
+
+        const url = '{% url "scylax:export" %}'
+        const response = await fetch(url, {
+            method: "POST",
+            redirect: "follow",
+            headers: {
+                'X-CSRFToken': "{{csrf_token}}",
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (response.status === 400) {
+                return response.text().then(errorMessage => {
+                    alert("Houve um problema ao baixar o arquivo zip")
+                })
+            } else {
+                const contentDisposition = response.headers.get('Content-Disposition')
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="(.+)"/)
+                    if (match) {
+                        fileName = match[1]
+                    }
+                }
+                return response.blob()
+                .then(blob => {
+                    const blobUrl = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.style.display = 'none'
+                    a.href = blobUrl
+                    a.download = fileName
+
+                    document.body.appendChild(a)
+                    a.click()
+                    
+                    document.body.removeChild(a)
+                    URL.revokeObjectURL(blobUrl)
+                })
+                .catch(error => {
+                    console.error('Ocorreu um erro:', error);
+                })
+            }
+        })
+    }
+</script>
+{% endblock %}

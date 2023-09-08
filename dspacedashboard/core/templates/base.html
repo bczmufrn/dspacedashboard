@@ -69,6 +69,12 @@
               Histórico
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'search'%}active{% endif %}" href="{% url 'scylax:search' %}">
+              <i class="far fa-newspaper"></i>
+              Scylax
+            </a>
+          </li>
           {% if user.is_staff %}
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == 'user_list'%}active{% endif %}" href="{% url 'accounts:user_list' %}">
