@@ -7,6 +7,7 @@ import json
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 from django.views.generic.edit import FormView
 from django.urls import reverse
 
@@ -38,6 +39,31 @@ class SearchArticlesView(FormView):
 
     def get_success_url(self):
         return reverse('scylax:search')
+    
+class ArticleDetailAPIView(View):
+    def get(self, request, *args, **kwargs):
+        article = get_object_or_404(Article, pk=kwargs.get('pk'))
+        article_data = {
+            'title': article.title,
+            'year': article.year.year,
+            'issn': article.issn,
+            'exported': article.exported,
+            'total_authors': article.authors.count(),
+            'authors': [],
+        }
+
+        for author in article.authors.all().order_by('-departments__name', 'name'):
+            author_data = {
+                'name': author.name,
+                'departments': []
+            }
+            for department in author.departments.all():
+                author_data['departments'].append(department.name)
+
+            article_data['authors'].append(author_data)
+
+        jsondata = json.dumps(article_data)
+        return HttpResponse(jsondata, content_type='application/json')
 
 class ExportArticles(View):
     def post(self, request, *args, **kwargs):

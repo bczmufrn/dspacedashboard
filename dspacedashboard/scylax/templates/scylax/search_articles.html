@@ -72,7 +72,15 @@
             <tbody>
                 {% for article in articles %}
                 <tr>
-                    <td>{{article.title}}</td>
+                    <td>
+                        {{article.title}} 
+                        <i 
+                            class="fas fa-info-circle" 
+                            data-toggle="modal" 
+                            data-target="#itemModal" 
+                            data-articleid="{{article.id}}"
+                        ></i>
+                    </td>
                     <td>{{article.year.year}}</td>
                     <td>{{article.authors.count}}</td>
                     <td>{{article.exported|yesno:"Sim,Não"}}</td>
@@ -95,6 +103,46 @@
         </div>
         {% endif %}
     </div>
+</div>
+
+<div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="detalhes-item" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="item-modal-title">Detalhes do artigo</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <table class="table">
+                <tr>
+                    <td class="font-weight-bold">Título</td>
+                    <td id="article-title"></td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">Ano</td>
+                    <td id="article-year"></td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">ISSN</td>
+                    <td id="article-issn"></td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">Total de autores</td>
+                    <td id="article-authors-count"></td>
+                </tr>
+                <tr>
+                    <td class="font-weight-bold">Autores</td>
+                    <td id="article-authors"></td>
+                </tr>
+          </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}
 
@@ -187,5 +235,34 @@
             }
         })
     }
+
+    $('#itemModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+        var articleId = button.data('articleid')
+        var modal = $(this)
+
+        fetch(`/scylax/api/artigo/${articleId}`)
+        .then(response => {
+            return response.json()
+        }).then(data => {
+            modal.find('#article-title').text(data.title)
+            modal.find('#article-year').text(data.year)
+            modal.find('#article-issn').text(data.issn)
+            modal.find('#article-authors-count').text(data.total_authors)
+
+            document.getElementById('article-authors').innerHTML = ''
+            
+            data.authors.forEach(function(author) {
+                var paragraph = document.createElement("p")
+                const departments = author.departments.join(', ')
+                paragraph.textContent = departments ? `${author.name} (${departments})` : author.name
+
+                document.getElementById('article-authors').appendChild(paragraph)
+            })
+        }).catch(error => {
+            console.warn(error)
+        })
+
+    })
 </script>
 {% endblock %}
