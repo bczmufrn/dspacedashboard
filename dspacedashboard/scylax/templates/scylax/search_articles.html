@@ -63,6 +63,7 @@
                     <th scope="col">Título</th>
                     <th scope="col">Ano</th>
                     <th scope="col">Autores</th>
+                    <th scope="col">Departamentos</th>
                     <th scope="col">Exportado</th>
                     <th>
                         <input type="checkbox" id="select-all">
@@ -74,15 +75,18 @@
                 <tr>
                     <td>
                         {{article.title}} 
-                        <i 
-                            class="fas fa-info-circle" 
-                            data-toggle="modal" 
-                            data-target="#itemModal" 
-                            data-articleid="{{article.id}}"
-                        ></i>
+                        <a href="javascript:;">
+                            <i 
+                                class="fas fa-info-circle" 
+                                data-toggle="modal" 
+                                data-target="#itemModal" 
+                                data-articleid="{{article.id}}"
+                            ></i>
+                        </a>
                     </td>
                     <td>{{article.year.year}}</td>
                     <td>{{article.authors.count}}</td>
+                    <td>{{article.department_count}}</td>
                     <td>{{article.exported|yesno:"Sim,Não"}}</td>
                     <td>
                         <input type="checkbox" class="export-article" value="{{article.id}}">
@@ -115,6 +119,9 @@
         </button>
       </div>
       <div class="modal-body">
+          <div class="alert alert-danger d-none" id="modal-alert" role="alert"> 
+            Ocorreu um erro na obtenção dos dados. Tente novamente em alguns instantes.
+          </div>
           <table class="table">
                 <tr>
                     <td class="font-weight-bold">Título</td>
@@ -241,8 +248,17 @@
         var articleId = button.data('articleid')
         var modal = $(this)
 
-        fetch(`/scylax/api/artigo/${articleId}`)
-        .then(response => {
+        modal.find('#article-title').text('')
+        modal.find('#article-year').text('')
+        modal.find('#article-issn').text('')
+        modal.find('#article-authors-count').text('')
+        modal.find('#modal-alert').addClass('d-none')
+        document.getElementById('article-authors').innerHTML = ''
+
+        fetch(`/scylax/api/artigo/${articleId}`).then(response => {
+            if (response.status >= 400) {
+                modal.find('#modal-alert').removeClass('d-none')
+            }
             return response.json()
         }).then(data => {
             modal.find('#article-title').text(data.title)
@@ -250,17 +266,20 @@
             modal.find('#article-issn').text(data.issn)
             modal.find('#article-authors-count').text(data.total_authors)
 
-            document.getElementById('article-authors').innerHTML = ''
-            
             data.authors.forEach(function(author) {
                 var paragraph = document.createElement("p")
                 const departments = author.departments.join(', ')
-                paragraph.textContent = departments ? `${author.name} (${departments})` : author.name
+                if (departments) {
+                    paragraph.textContent = `${author.name} (${departments})`
+                    paragraph.classList = 'font-weight-bold'
+                } else {
+                    paragraph.textContent = author.name
+                }
 
                 document.getElementById('article-authors').appendChild(paragraph)
             })
         }).catch(error => {
-            console.warn(error)
+            modal.find('#modal-alert').removeClass('d-none')
         })
 
     })

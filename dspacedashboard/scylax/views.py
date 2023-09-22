@@ -10,8 +10,9 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from django.views.generic.edit import FormView
 from django.urls import reverse
+from django.db.models import Count
 
-from dspacedashboard.scylax.models import Article
+from dspacedashboard.scylax.models import Article, Department
 from dspacedashboard.scylax.forms import ScylaxSearchForm
 
 class SearchArticlesView(FormView):
@@ -22,7 +23,7 @@ class SearchArticlesView(FormView):
         articles = Article.objects.filter(
             authors__departments__in=[form.cleaned_data['department']],
             exported=form.cleaned_data['include_exported'],
-        ).distinct().order_by('-year')
+        ).order_by('-year')
 
         if form.cleaned_data.get('year', None):
             articles = articles.filter(

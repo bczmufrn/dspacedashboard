@@ -67,6 +67,12 @@ class Article(BaseModel):
         verbose_name = 'Artigo'
         verbose_name_plural = 'Artigos'
 
+    @property
+    def department_count(self):
+        return Department.objects.filter(
+            authors__in=self.authors.all()
+        ).distinct().count()
+
     def to_xml(self):
         root = etree.Element('dublin_core', schema='dc')
 
