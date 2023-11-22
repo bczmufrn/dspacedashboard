@@ -273,12 +273,24 @@
                     paragraph.textContent = `${author.name} (${departments})`
                     paragraph.classList = 'font-weight-bold'
                 } else {
-                    paragraph.textContent = author.name
+                    paragraph.textContent = `${author.name}`
+                }
+
+                if (author.id_lattes) {
+                    let lattes_icon = document.createElement("i")
+                    lattes_icon.className = "fas fa-user ml-2"
+                    
+                    let lattes_link = document.createElement("a")
+                    lattes_link.href = `http://lattes.cnpq.br/${author.id_lattes}`
+                    lattes_link.target = '_blank'
+                    lattes_link.appendChild(lattes_icon)
+                    paragraph.appendChild(lattes_link)
                 }
 
                 document.getElementById('article-authors').appendChild(paragraph)
             })
         }).catch(error => {
+            console.log(error)
             modal.find('#modal-alert').removeClass('d-none')
         })
 

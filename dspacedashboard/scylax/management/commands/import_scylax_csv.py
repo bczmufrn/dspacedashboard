@@ -13,11 +13,6 @@ class Command(BaseCommand):
     #     parser.add_argument('filename', nargs=1, type=str)
 
     def handle(self, *args, **kwargs):
-        #Colunas originais
-        #    'id_producao', 'titulo_normalizado', 'ano', 'issn', 'nome_normalizado',
-        #    'id_lattes', 'id_departamento', 'nome_departamento','
-        #    'sigla_departamento', 'id_centro', 'nome_centro', 'sigla_centro'
-
         df = pd.read_csv('import/data-scylax.csv', converters={'nome_normalizado': str.strip})
 
         print("# Criando centros acadêmicos")

@@ -56,6 +56,7 @@ class ArticleDetailAPIView(View):
         for author in article.authors.all().order_by('-departments__name', 'name'):
             author_data = {
                 'name': author.name,
+                'id_lattes': author.id_lattes,
                 'departments': []
             }
             for department in author.departments.all():
