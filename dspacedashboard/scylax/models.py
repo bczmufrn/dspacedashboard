@@ -36,7 +36,7 @@ class Department(BaseModel):
 
 
 class Author(BaseModel):
-    id_lattes = models.PositiveIntegerField('ID Lattes')
+    id_lattes = models.BigIntegerField('ID Lattes')
     name = models.CharField('Nome', max_length=512)
     departments = models.ManyToManyField(
         Department, 
