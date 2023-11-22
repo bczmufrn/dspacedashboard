@@ -20,6 +20,7 @@ from django.conf.urls import include
 urlpatterns = [
     path('', include('dspacedashboard.core.urls', namespace='core')),
     path('import/', include('dspacedashboard.imports.urls', namespace='import')),
+    path('scylax/', include('dspacedashboard.scylax.urls', namespace='scylax')),
     path('conta/', include('dspacedashboard.accounts.urls', namespace='accounts')),
     path('admin/', admin.site.urls),
 ]

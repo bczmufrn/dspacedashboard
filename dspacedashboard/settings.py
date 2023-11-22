@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'dspacedashboard.core',
     'dspacedashboard.imports',
     'dspacedashboard.accounts',
+    'dspacedashboard.scylax',
 
     'widget_tweaks',
 ]
@@ -73,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dspacedashboard.core.context_processors.settings_variables',
             ],
         },
     },
@@ -160,3 +162,6 @@ SOLR_URL = config('SOLR_URL')
 DSPACE_PATH = config('DSPACE_PATH')
 MAPFILES_ROOT = os.path.join(BASE_DIR, 'mapfiles')
 DSPACE_IMPORT_USER_MAIL = config('DSPACE_IMPORT_USER_MAIL')
+
+#Scylax
+ENABLE_SCYLAX = config('ENABLE_SCYLAX', default=False, cast=bool)
