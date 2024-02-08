@@ -247,7 +247,7 @@
         var button = $(event.relatedTarget)
         var articleId = button.data('articleid')
         var modal = $(this)
-        var baseArticleUrl = "{% url 'scylax:article_api' 00000000-0000-0000-0000-000000000000 %}"
+        var baseArticleUrl = "{% url 'scylax:article_api' '00000000-0000-0000-0000-000000000000' %}"
 
         modal.find('#article-title').text('')
         modal.find('#article-year').text('')
