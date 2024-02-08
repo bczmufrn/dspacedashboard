@@ -247,6 +247,7 @@
         var button = $(event.relatedTarget)
         var articleId = button.data('articleid')
         var modal = $(this)
+        var baseArticleUrl = "{% url scylax:article_api 00000000-0000-0000-0000-000000000000 %}"
 
         modal.find('#article-title').text('')
         modal.find('#article-year').text('')
@@ -255,7 +256,7 @@
         modal.find('#modal-alert').addClass('d-none')
         document.getElementById('article-authors').innerHTML = ''
 
-        fetch(`/scylax/api/artigo/${articleId}`).then(response => {
+        fetch(baseArticleUrl.replace('00000000-0000-0000-0000-000000000000', articleId)).then(response => {
             if (response.status >= 400) {
                 modal.find('#modal-alert').removeClass('d-none')
             }
