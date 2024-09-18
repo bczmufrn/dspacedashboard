@@ -30,9 +30,9 @@ def import_file(request):
 
     collections = get_collections()
     collections_form = ()
-    for collection in collections:               
-        if collection.get('dc.title', None):
-            collections_form += ((collection['handle'], collection['dc.title'][0]),)
+    for collection in collections:
+        if collection.get('name', None):
+            collections_form += ((collection['handle'], collection['name']),)
     
     form = ImportFileForm(request.POST or None, request.FILES or None, collections=collections_form)
     context = {}
@@ -41,8 +41,8 @@ def import_file(request):
         #Getting/saving target collection and file data
         handle = form.cleaned_data.get('collection')        
         collection_name = next(item for item in collections if item["handle"] == handle)
-        collection, created = Collection.objects.get_or_create(handle=handle, 
-            name=collection_name.get('dc.title', [['']])[0])
+        collection, _ = Collection.objects.get_or_create(handle=handle, 
+            name=collection_name.get('name', [['']])[0])
         file_import = FileImport.objects.create(user=request.user, collection=collection)
         
         #Saving temporary file
