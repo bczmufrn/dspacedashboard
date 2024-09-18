@@ -1,21 +1,14 @@
-import re
-import requests, json, subprocess, logging, os
+import subprocess, os
 import shutil
 
-
-from django.urls import reverse
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
-from django.views.generic.base import TemplateView
 from django.core.files.storage import FileSystemStorage
 from django.views.generic import DetailView
-from django.views.generic.edit import FormView
 from django.views.generic import ListView
 from django.shortcuts import render
 
@@ -41,8 +34,8 @@ def import_file(request):
         #Getting/saving target collection and file data
         handle = form.cleaned_data.get('collection')        
         collection_name = next(item for item in collections if item["handle"] == handle)
-        collection, _ = Collection.objects.get_or_create(handle=handle, 
-            name=collection_name.get('name', [['']])[0])
+        collection, _ = Collection.objects.get_or_create(handle=handle,
+            name=collection_name.get('name', [['']]))
         file_import = FileImport.objects.create(user=request.user, collection=collection)
         
         #Saving temporary file
