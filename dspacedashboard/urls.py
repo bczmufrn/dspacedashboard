@@ -22,5 +22,6 @@ urlpatterns = [
     path('import/', include('dspacedashboard.imports.urls', namespace='import')),
     path('scylax/', include('dspacedashboard.scylax.urls', namespace='scylax')),
     path('conta/', include('dspacedashboard.accounts.urls', namespace='accounts')),
+    path('autopermission/', include('dspacedashboard.autopermission.urls', namespace='autopermission')),
     path('admin/', admin.site.urls),
 ]

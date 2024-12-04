@@ -47,8 +47,11 @@ INSTALLED_APPS = [
     'dspacedashboard.imports',
     'dspacedashboard.accounts',
     'dspacedashboard.scylax',
+    'dspacedashboard.autopermission',
 
     'widget_tweaks',
+    'rest_framework',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -116,6 +119,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
 
 #Sentry
 SENTRY_DSN = config('SENTRY_DSN', default='')
