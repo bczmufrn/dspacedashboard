@@ -84,6 +84,12 @@
               Usuários
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'list'%}active{% endif %}" href="{% url 'autopermission:list' %}">
+              <i class="fas fa-users"></i>
+              Autopermissão
+            </a>
+          </li>
           {% endif %}
         </ul>
       </div>
