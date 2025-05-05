@@ -4,7 +4,7 @@ O sistema tem como função importar arquivos ZIP para a plataforma DSpace, expo
 
 ## Requisitos de sistema
 
- - Python 3.5 ou superior
+ - Python 3.9 ou superior
  - pip
  - PostgreSQL ou MySQL
  - Servidor web (Apache, Nginx ou semelhante)
